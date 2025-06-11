@@ -17,7 +17,8 @@ const militaryTracks = [
     // falta { name: "Olhar Frente", file: "audio/olhar-frente.mp3", icon: "fas fa-eye" },
     { name: "Alto", file: "audio/alto.mp3", icon: "fas fa-stop-circle" },
     { name: "Armar Baioneta", file: "audio/armar-baioneta.mp3", icon: "fas fa-sword" },
-    { name: "Desarmar Baioneta", file: "audio/desarmar-baioneta.mp3", icon: "fas fa-shield" }
+    { name: "Desarmar Baioneta", file: "audio/desarmar-baioneta.mp3", icon: "fas fa-shield" },
+    { name: "Superior", file: "audio/superior.mp3", icon: "fas fa-shield" }
 ];
 
 // Elementos DOM
