@@ -112,14 +112,39 @@ body {
     width: 100px;
 }
 
-.tracks-grid {
+.tracks-grid, .musics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin-top: 2rem;
 }
 
-.track-card {
+.musics-grid {
+    display: grid;
+    grid-template-areas: "music-cards music-lyrics-card music-lyrics-card";
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.lyrics-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    backdrop-filter: blur(5px);
+    grid-area: music-lyrics-card;
+}
+
+.music-cards {
+    grid-area: music-cards;
+    display: grid;
+    gap: 1rem;
+}
+
+.track-card, .music-card, .tab-card {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     padding: 1.5rem;
@@ -130,19 +155,20 @@ body {
     backdrop-filter: blur(5px);
 }
 
-.track-card:hover {
+
+.track-card:hover, .tab-card:hover, .music-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     border-color: #529e43;
 }
 
-.track-card.active {
+.track-card.active, .tab-card.active, .music-card:active {
     background: linear-gradient(135deg, #529e43, #054403);
     color: white;
     border-color: #fff;
 }
 
-.track-card h5 {
+.track-card h5, .tab-card h5, .music-card h5, .lyrics-card h5 {
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
@@ -177,4 +203,20 @@ body {
     .controls {
         flex-wrap: wrap;
     }
+}
+
+.tab-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.tab-card {
+    background: rgba(197, 255, 214, 0.9);
+}
+
+.track-card.active {
+    background: linear-gradient(135deg, #529e43, #054403);
+    color: white;
+    border-color: #fff;
 }

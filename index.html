@@ -16,8 +16,9 @@
         </div>
         
         <div class="audio-player">
+            <small>* ainda não foram implementadas as músicas militares</small>
             <div class="current-track">
-                <h3 id="currentTrackName">Selecione um toque militar</h3>
+                <h3 id="currentTrackName">Selecione um toque ou música militar</h3>
                 <div class="loading" id="loading">
                     <i class="fas fa-spinner fa-spin"></i> Carregando...
                 </div>
@@ -60,12 +61,15 @@
             <!-- Faça a seleção de toques ou musicas militares -->
         </div>
         
+        <hr>
+        
         <div class="tracks-grid" id="tracksGrid">
             <!-- Os cards dos toques serão gerados dinamicamente pelo JavaScript -->
         </div>
-        
+
         <div class="musics-grid" id="musicsGrid">
             <!-- Os cards das musicas serão gerados dinamicamente pelo JavaScript -->
+            <div class="lyrics-card"><h5>Nenhuma musica selecionada</h5><p>Selecione uma música para mostrar sua legenda</p></div>
         </div>
         
         <audio id="audioPlayer" preload="metadata"></audio>

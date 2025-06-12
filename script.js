@@ -23,15 +23,20 @@ const militaryTracks = [
 
 // Ao selecionar uma música militar, mostrar as suas letras ao lado. (pode ser por grid view)
 const militaryMusics = [
-    { name: "Fibra de Heroi", file: "audio/musicas/fibra_de_heroi.mp3", lyric_id: 1 },
     { name: "Canção do Exército", file: "audio/musicas/cancao_do_exercito.mp3", lyric_id: 2 },
+    { name: "Fibra de Heroi", file: "audio/musicas/fibra_de_heroi.mp3", lyric_id: 1 },
+    { name: "Avante Camaradas", file: "audio/musicas/cancao_do_exercito.mp3", lyric_id: 2 },
 ];
 
 const militaryLyrics = [
-    { id: 1, innerHTML: ""},
-    { id: 2, innerHTML: ""}
+    { id: 1, innerHTML: "<h1>Fibra de heroi</h1><p>aaa</p>"},
+    { id: 2, innerHTML: "<h1>Canção do Exército</h1><p>bbb</p>"}
 ]
 
+const tabs = [
+    { htmlGridId: 'tracksGrid', name: "Toques de Corneta", isActive: true},
+    { htmlGridId: 'musicsGrid', name: "Musicas Militares", isActive: false},
+]
 // Elementos DOM
 const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
@@ -54,14 +59,72 @@ const musicsGrid = document.getElementById('musicsGrid');
 
 // Estado do player
 let currentTrackIndex = -1;
+let currentTabIndex = 0;
 let isPlaying = false;
 
 // Inicializar a aplicação
 function init() {
+    createTabs();
     generateTrackCards();
+    generateMusicCards()
     setupEventListeners();
     setupAudioEvents();
     setVolume(70);
+
+    tracksGrid.style.display = tabs[0].isActive ? 'grid' : 'none';
+    musicsGrid.style.display = tabs[1].isActive ? 'grid' : 'none';
+}
+
+// Gera botões de abas
+function createTabs() {
+    const container = document.createElement('div');
+    container.className = 'tab-buttons';
+    tabSelector.appendChild(container);
+
+    tabs.forEach((tab, index) => {
+        const btn = document.createElement('div');
+        btn.className = 'tab-card' + (tab.isActive ? ' active' : '');
+
+        btn.innerHTML = `
+            <h5>${tab.name}</h5>
+            <small>Aba de Sons</small>
+        `;
+
+        btn.addEventListener('click', () => selectTab(tab, index));
+
+        container.appendChild(btn);
+    });
+}
+
+function selectTab(tab, index) {
+    currentTabIndex = index;
+
+    // toggle active
+    document.querySelectorAll('.tab-card').forEach((b, index) => b.classList.toggle('active', index === currentTabIndex));
+
+    // alterna grids
+    tabs.forEach(t => {
+        document.getElementById(t.htmlGridId).style.display = t.name === tab.name ? 'grid' : 'none';
+    });
+}
+
+// Gerar cards das musicas
+function generateMusicCards() {
+    const container = document.createElement('div')
+    container.className = 'music-cards';
+    musicsGrid.appendChild(container);
+
+    militaryMusics.forEach((track, index) => {
+        const card = document.createElement('div');
+        card.className = 'music-card';
+        // dps eu melhoro os icons
+        card.innerHTML = `
+            <h5>${track.name}</h5>
+            <small>Música Militar</small>
+        `;
+        card.addEventListener('click', () => selectTrack(index));
+        container.appendChild(card);
+    });
 }
 
 // Gerar cards dos toques
@@ -72,11 +135,6 @@ function generateTrackCards() {
         card.className = 'track-card';
         // dps eu melhoro os icons
         card.innerHTML = `
-            <div class="track-icon">
-                <!--
-                <i class="${track.icon}"></i>
-                -->
-            </div>
             <h5>${track.name}</h5>
             <small>Toque Militar</small>
         `;
