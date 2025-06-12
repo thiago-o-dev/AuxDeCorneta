@@ -1,25 +1,36 @@
 // Lista de toques militares - FÁCIL DE ADICIONAR NOVOS TOQUES
 const militaryTracks = [
-    { name: "Sentido", file: "audio/sentido.mp3", icon: "fas fa-user-tie" },
-    { name: "Descansar", file: "audio/descansar.mp3", icon: "fas fa-pause" },
-    { name: "Cobrir", file: "audio/cobrir.mp3", icon: "fas fa-shield-alt" },
-    { name: "Firme", file: "audio/firme.mp3", icon: "fas fa-exclamation" },
-    { name: "Direita Volver", file: "audio/direita-volver.mp3", icon: "fas fa-arrow-right" },
-    { name: "Esquerda Volver", file: "audio/esquerda-volver.mp3", icon: "fas fa-arrow-left" },
-    { name: "Meia Volta Volver", file: "audio/meia-volta-volver.mp3", icon: "fas fa-undo" },
-    //{ name: "Voltas Volver", file: "audio/voltas-volver.mp3", icon: "fas fa-sync" },
-    { name: "Cruzar Arma", file: "audio/cruzar-arma.mp3", icon: "fas fa-times" },
-    { name: "Ombro Arma", file: "audio/ombro-arma.mp3", icon: "fas fa-hand-paper" },
-    { name: "Apresentar Arma", file: "audio/apresentar-arma.mp3", icon: "fas fa-hand-point-up" },
-    { name: "Descansar Arma", file: "audio/descansar-arma.mp3", icon: "fas fa-hand-point-down" },
-    { name: "Ordinário Marche", file: "audio/ordinario-marche.mp3", icon: "fas fa-walking" },
-    // falta { name: "Olhar à Direita", file: "audio/olhar-direita.mp3", icon: "fas fa-eye" },
-    // falta { name: "Olhar Frente", file: "audio/olhar-frente.mp3", icon: "fas fa-eye" },
-    { name: "Alto", file: "audio/alto.mp3", icon: "fas fa-stop-circle" },
-    { name: "Armar Baioneta", file: "audio/armar-baioneta.mp3", icon: "fas fa-sword" },
-    { name: "Desarmar Baioneta", file: "audio/desarmar-baioneta.mp3", icon: "fas fa-shield" },
-    { name: "Superior", file: "audio/superior.mp3", icon: "fas fa-shield" }
+    { name: "Sentido", file: "audio/toques_corneta/sentido.mp3", icon: "fas fa-user-tie" },
+    { name: "Descansar", file: "audio/toques_corneta/descansar.mp3", icon: "fas fa-pause" },
+    { name: "Cobrir", file: "audio/toques_corneta/cobrir.mp3", icon: "fas fa-shield-alt" },
+    { name: "Firme", file: "audio/toques_corneta/firme.mp3", icon: "fas fa-exclamation" },
+    { name: "Direita Volver", file: "audio/toques_corneta/direita-volver.mp3", icon: "fas fa-arrow-right" },
+    { name: "Esquerda Volver", file: "audio/toques_corneta/esquerda-volver.mp3", icon: "fas fa-arrow-left" },
+    { name: "Meia Volta Volver", file: "audio/toques_corneta/meia-volta-volver.mp3", icon: "fas fa-undo" },
+    //{ name: "Voltas Volver", file: "audio/toques_corneta/voltas-volver.mp3", icon: "fas fa-sync" },
+    { name: "Cruzar Arma", file: "audio/toques_corneta/cruzar-arma.mp3", icon: "fas fa-times" },
+    { name: "Ombro Arma", file: "audio/toques_corneta/ombro-arma.mp3", icon: "fas fa-hand-paper" },
+    { name: "Apresentar Arma", file: "audio/toques_corneta/apresentar-arma.mp3", icon: "fas fa-hand-point-up" },
+    { name: "Descansar Arma", file: "audio/toques_corneta/descansar-arma.mp3", icon: "fas fa-hand-point-down" },
+    { name: "Ordinário Marche", file: "audio/toques_corneta/ordinario-marche.mp3", icon: "fas fa-walking" },
+    // falta { name: "Olhar à Direita", file: "audio/toques_corneta/olhar-direita.mp3", icon: "fas fa-eye" },
+    // falta { name: "Olhar Frente", file: "audio/toques_corneta/olhar-frente.mp3", icon: "fas fa-eye" },
+    { name: "Alto", file: "audio/toques_corneta/alto.mp3", icon: "fas fa-stop-circle" },
+    { name: "Armar Baioneta", file: "audio/toques_corneta/armar-baioneta.mp3", icon: "fas fa-sword" },
+    { name: "Desarmar Baioneta", file: "audio/toques_corneta/desarmar-baioneta.mp3", icon: "fas fa-shield" },
+    { name: "Superior", file: "audio/toques_corneta/superior.mp3", icon: "fas fa-shield" }
 ];
+
+// Ao selecionar uma música militar, mostrar as suas letras ao lado. (pode ser por grid view)
+const militaryMusics = [
+    { name: "Fibra de Heroi", file: "audio/musicas/fibra_de_heroi.mp3", lyric_id: 1 },
+    { name: "Canção do Exército", file: "audio/musicas/cancao_do_exercito.mp3", lyric_id: 2 },
+];
+
+const militaryLyrics = [
+    { id: 1, innerHTML: ""},
+    { id: 2, innerHTML: ""}
+]
 
 // Elementos DOM
 const audioPlayer = document.getElementById('audioPlayer');
@@ -34,8 +45,12 @@ const durationSpan = document.getElementById('duration');
 const volumeSlider = document.getElementById('volumeSlider');
 const volumeDisplay = document.getElementById('volumeDisplay');
 const currentTrackName = document.getElementById('currentTrackName');
-const tracksGrid = document.getElementById('tracksGrid');
 const loading = document.getElementById('loading');
+
+// Adicionar botões ao tab selector referente ao Toques Militares (tracksGrid) e Musicas Militares (musicsGrid)
+const tabSelector = document.getElementById('tabSelector');
+const tracksGrid = document.getElementById('tracksGrid');
+const musicsGrid = document.getElementById('musicsGrid');
 
 // Estado do player
 let currentTrackIndex = -1;
@@ -92,7 +107,7 @@ function setupAudioEvents() {
 
     audioPlayer.addEventListener('timeupdate', updateProgress);
     audioPlayer.addEventListener('loadedmetadata', updateDuration);
-    audioPlayer.addEventListener('ended', nextTrack);
+    //audioPlayer.addEventListener('ended', nextTrack);
     
     audioPlayer.addEventListener('error', (e) => {
         console.error('Erro ao carregar áudio:', e);
@@ -102,7 +117,7 @@ function setupAudioEvents() {
 }
 
 // Selecionar toque
-function selectTrack(index) {
+function selectTrack(index, autoplay = false) {
     if (currentTrackIndex === index && isPlaying) {
         togglePlayPause();
         return;
@@ -186,6 +201,10 @@ function nextTrack() {
     }
 }
 
+function restartTrack() {
+    selectTrack(currentTrackIndex)
+}
+
 // Controle de volume
 function handleVolumeChange() {
     const volume = volumeSlider.value;
@@ -230,6 +249,7 @@ function formatTime(seconds) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
+
 // Atalhos de teclado
 document.addEventListener('keydown', (e) => {
     switch(e.code) {
@@ -239,7 +259,13 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'ArrowLeft':
             e.preventDefault();
-            previousTrack();
+            const secondsPlayed = audioPlayer.currentTime;
+            if (secondsPlayed >= 2){ 
+                audioPlayer.currentTime = 0
+            }
+            else {
+                previousTrack();
+            }
             break;
         case 'ArrowRight':
             e.preventDefault();
