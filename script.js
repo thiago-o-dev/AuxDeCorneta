@@ -370,7 +370,7 @@ function setupAudioEvents() {
 
     audioPlayer.addEventListener('timeupdate', updateProgress);
     audioPlayer.addEventListener('loadedmetadata', updateDuration);
-    //audioPlayer.addEventListener('ended', nextTrack);
+    audioPlayer.addEventListener('ended', togglePlayPause);
     
     audioPlayer.addEventListener('error', (e) => {
         console.error('Erro ao carregar áudio:', e);
