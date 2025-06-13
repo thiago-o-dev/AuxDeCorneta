@@ -235,8 +235,8 @@ Lutaremos sem temor</p>
 ]
 
 const tabs = [
-    { id: 0, htmlGridId: 'tracksGrid', name: "Toques de Corneta", audiosLenght: militaryTracks.length, isActive: true},
-    { id: 1, htmlGridId: 'musicsGrid', name: "Musicas Militares", audiosLenght: militaryMusics.length, isActive: false},
+    { id: 0, htmlGridId: 'tracksGrid', name: "Toques de Corneta", audiosLength: militaryTracks.length, isActive: true},
+    { id: 1, htmlGridId: 'musicsGrid', name: "Musicas Militares", audiosLength: militaryMusics.length, isActive: false},
 ]
 // Elementos DOM
 const audioPlayer = document.getElementById('audioPlayer');
@@ -478,13 +478,13 @@ function previousTrack() {
     if (currentTrackMatrix[currentTabId] > 0) {
         selectTrack(currentTrackMatrix[currentTabId] - 1);
     } else {
-        selectTrack(tabs[currentTabId].audiosLenght - 1);
+        selectTrack(tabs[currentTabId].audiosLength - 1);
     }
 }
 
 function nextTrack() {
     
-    if (currentTrackMatrix[currentTabId] < tabs[currentTabId].audiosLenght - 1) {
+    if (currentTrackMatrix[currentTabId] < tabs[currentTabId].audiosLength - 1) {
         selectTrack(currentTrackMatrix[currentTabId] + 1);
     } else {
         selectTrack(0);
