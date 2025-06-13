@@ -166,7 +166,7 @@ body {
     border-color: #529e43;
 }
 
-.track-card.active, .tab-card.active, .music-card:active {
+.track-card.active, .tab-card.active, .music-card.active {
     background: linear-gradient(135deg, #529e43, #054403);
     color: white;
     border-color: #fff;
