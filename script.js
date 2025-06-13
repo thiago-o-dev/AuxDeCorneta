@@ -23,19 +23,220 @@ const militaryTracks = [
 
 // Ao selecionar uma música militar, mostrar as suas letras ao lado. (pode ser por grid view)
 const militaryMusics = [
-    { name: "Canção do Exército", file: "audio/musicas/cancao_do_exercito.mp3", lyric_id: 2 },
-    { name: "Fibra de Heroi", file: "audio/musicas/fibra_de_heroi.mp3", lyric_id: 1 },
-    { name: "Avante Camaradas", file: "audio/musicas/cancao_do_exercito.mp3", lyric_id: 2 },
+    { name: "Canção do Exército", file: "audio/musicas/cancao-do-exercito.mp3", lyric_id: 1 },
+    { name: "Fibra de Heroi", file: "audio/musicas/fibra-de-heroi.mp3", lyric_id: 2 },
+    { name: "Hino Nacional", file: "audio/musicas/hino-nacional.mp3", lyric_id: 3 },
+    //{ name: "Avante Camaradas", file: "audio/musicas/avante-camaradas.mp3", lyric_id: 4 }
 ];
-
 const militaryLyrics = [
-    { id: 1, innerHTML: "<h1>Fibra de heroi</h1><p>aaa</p>"},
-    { id: 2, innerHTML: "<h1>Canção do Exército</h1><p>bbb</p>"}
+    { innerHTML: "<p>Letras não implementadas</p>"},
+    { innerHTML: `<div style="display: flex; justify-content: space-evenly; gap: 1.5rem; text-align: left;">
+        <p>Nós somos da Pátria a guarda<br>
+Fiéis soldados<br>
+Por ela amados<br>
+Nas cores de nossa farda<br>
+Rebrilha a glória<br>
+Fulge a vitória<br><br>
+
+Em nosso valor se encerra<br>
+Toda a esperança<br>
+Que um povo alcança<br>
+Quando altiva for a Terra<br>
+Rebrilha a glória<br>
+Fulge a vitória<br><br>
+
+A paz queremos com fervor<br>
+A guerra só nos causa dor<br>
+Porém, se a Pátria amada<br>
+For um dia ultrajada<br>
+Lutaremos sem temor<br>
+</p>
+<p>
+A paz queremos com fervor<br>
+A guerra só nos causa dor<br>
+Porém, se a Pátria amada<br>
+For um dia ultrajada<br>
+Lutaremos sem temor<br><br>
+
+Como é sublime<br>
+Saber amar<br>
+Com a alma adorar<br>
+A terra onde se nasce!<br>
+Amor febril<br>
+Pelo Brasil<br>
+No coração<br>
+Nosso que passe<br><br>
+
+E quando a nação querida<br>
+Frente ao inimigo<br>
+Correr perigo<br>
+Se dermos por ela a vida<br>
+Rebrilha a glória<br>
+Fulge a vitória<br>
+</p>
+<p>
+Assim ao Brasil faremos<br>
+Oferta igual<br>
+De amor filial<br>
+E a ti, Pátria, salvaremos!<br>
+Rebrilha a glória<br>
+Fulge a vitória<br><br>
+
+A paz queremos com fervor<br>
+A guerra só nos causa dor<br>
+Porém, se a Pátria amada<br>
+For um dia ultrajada<br>
+Lutaremos sem temor<br><br>
+
+A paz queremos com fervor<br>
+A guerra só nos causa dor<br>
+Porém, se a Pátria amada<br>
+For um dia ultrajada<br>
+Lutaremos sem temor</p>
+</div>`
+    },
+    { innerHTML: `<div style="display: flex; justify-content: space-evenly; gap: 1.5rem; text-align: left;">
+  <p>
+    Se a Pátria querida<br>
+    For envolvida pelo inimigo<br>
+    Na paz ou na guerra<br>
+    Defende a terra contra o perigo<br><br>
+
+    Com ânimo forte, se for preciso<br>
+    Enfrenta a morte<br>
+    Afronta se lava com fibra de herói<br>
+    De gente brava<br><br>
+
+    Bandeira do Brasil<br>
+    Ninguém te manchará<br>
+    Teu povo varonil<br>
+    Isso não consentirá<br><br>
+
+    Bandeira idolatrada<br>
+    Altiva a tremular<br>
+    Onde a liberdade é mais uma estrela a brilhar<br>
+  </p>
+  <p>
+    Bandeira do Brasil<br>
+    Ninguém te manchará<br>
+    Teu povo varonil<br>
+    Isso não consentirá<br><br>
+
+    Bandeira idolatrada<br>
+    Altiva a tremular<br>
+    Onde a liberdade é mais uma estrela a brilhar<br><br>
+
+    Se a Pátria querida<br>
+    For envolvida pelo inimigo<br>
+    Na paz ou na guerra<br>
+    Defende a terra contra o perigo<br><br>
+
+    Com ânimo forte, se for preciso<br>
+    Enfrenta a morte<br>
+    Afronta se lava com fibra de herói<br>
+    De gente brava<br>
+  </p>
+  <p>
+    Bandeira do Brasil<br>
+    Ninguém te manchará<br>
+    Teu povo varonil<br>
+    Isso não consentirá<br><br>
+
+    Bandeira idolatrada<br>
+    Altiva a tremular<br>
+    Onde a liberdade é mais uma estrela a brilhar<br><br>
+
+    Bandeira do Brasil<br>
+    Ninguém te manchará<br>
+    Teu povo varonil<br>
+    Isso não consentirá<br><br>
+
+    Bandeira idolatrada<br>
+    Altiva a tremular<br>
+    Onde a liberdade é mais uma estrela a brilhar
+  </p>
+</div>`
+    },
+    { innerHTML: `<div style="display: flex; justify-content: space-evenly; gap: 1.5rem; text-align: left;">
+  <p>
+    <strong>Parte I</strong><br><br>
+
+    Ouviram do Ipiranga as margens plácidas<br>
+    De um povo heróico o brado retumbante,<br>
+    E o sol da liberdade, em raios fúlgidos,<br>
+    Brilhou no céu da pátria nesse instante.<br><br>
+
+    Se o penhor dessa igualdade<br>
+    Conseguimos conquistar com braço forte,<br>
+    Em teu seio, ó liberdade,<br>
+    Desafia o nosso peito a própria morte!<br><br>
+
+    Ó Pátria amada,<br>
+    Idolatrada,<br>
+    Salve! Salve!<br><br>
+
+    Brasil, um sonho intenso, um raio vívido<br>
+    De amor e de esperança à terra desce,<br>
+    Se em teu formoso céu, risonho e límpido,<br>
+    A imagem do Cruzeiro resplandece.<br><br>
+
+    Gigante pela própria natureza,<br>
+    És belo, és forte, impávido colosso,<br>
+    E o teu futuro espelha essa grandeza.<br><br>
+
+    Terra adorada,<br>
+    Entre outras mil,<br>
+    És tu, Brasil,<br>
+    Ó Pátria amada!<br><br>
+
+    Dos filhos deste solo és mãe gentil,<br>
+    Pátria amada,<br>
+    Brasil!
+  </p>
+  <p>
+    <strong>Parte II</strong><br><br>
+
+    Deitado eternamente em berço esplêndido,<br>
+    Ao som do mar e à luz do céu profundo,<br>
+    Fulguras, ó Brasil, florão da América,<br>
+    Iluminado ao sol do Novo Mundo!<br><br>
+
+    Do que a terra, mais garrida,<br>
+    Teus risonhos, lindos campos têm mais flores;<br>
+    "Nossos bosques têm mais vida",<br>
+    "Nossa vida" no teu seio "mais amores."<br><br>
+
+    Ó Pátria amada,<br>
+    Idolatrada,<br>
+    Salve! Salve!<br><br>
+
+    Brasil, de amor eterno seja símbolo<br>
+    O lábaro que ostentas estrelado,<br>
+    E diga o verde-louro dessa flâmula<br>
+    – "Paz no futuro e glória no passado."<br><br>
+
+    Mas, se ergues da justiça a clava forte,<br>
+    Verás que um filho teu não foge à luta,<br>
+    Nem teme, quem te adora, a própria morte.<br><br>
+
+    Terra adorada,<br>
+    Entre outras mil,<br>
+    És tu, Brasil,<br>
+    Ó Pátria amada!<br><br>
+
+    Dos filhos deste solo és mãe gentil,<br>
+    Pátria amada,<br>
+    Brasil!
+  </p>
+</div>
+        `
+    }
+,
 ]
 
 const tabs = [
-    { htmlGridId: 'tracksGrid', name: "Toques de Corneta", isActive: true},
-    { htmlGridId: 'musicsGrid', name: "Musicas Militares", isActive: false},
+    { id: 0, htmlGridId: 'tracksGrid', name: "Toques de Corneta", audiosLenght: militaryTracks.length, isActive: true},
+    { id: 1, htmlGridId: 'musicsGrid', name: "Musicas Militares", audiosLenght: militaryMusics.length, isActive: false},
 ]
 // Elementos DOM
 const audioPlayer = document.getElementById('audioPlayer');
@@ -57,12 +258,17 @@ const tabSelector = document.getElementById('tabSelector');
 const tracksGrid = document.getElementById('tracksGrid');
 const musicsGrid = document.getElementById('musicsGrid');
 
+// Adicionais
+const lyricsCard = document.getElementById('lyricsCard');
+
 // Estado do player
-let currentTrackIndex = -1;
-let currentTabIndex = 0;
+const noTrackSelectedId = -1;
+let currentTrackMatrix = new Array(tabs.length).fill(noTrackSelectedId);
+
+let currentTabId = 0;
 let isPlaying = false;
 
-// Inicializar a aplicação
+// Inicializa a aplicação
 function init() {
     createTabs();
     generateTrackCards();
@@ -90,17 +296,16 @@ function createTabs() {
             <small>Aba de Sons</small>
         `;
 
-        btn.addEventListener('click', () => selectTab(tab, index));
-
+        btn.addEventListener('click', () => selectTab(tab, tab.id));
         container.appendChild(btn);
     });
 }
 
 function selectTab(tab, index) {
-    currentTabIndex = index;
+    currentTabId = index;
 
     // toggle active
-    document.querySelectorAll('.tab-card').forEach((b, index) => b.classList.toggle('active', index === currentTabIndex));
+    document.querySelectorAll('.tab-card').forEach((b, index) => b.classList.toggle('active', index === currentTabId));
 
     // alterna grids
     tabs.forEach(t => {
@@ -175,40 +380,66 @@ function setupAudioEvents() {
 }
 
 // Selecionar toque
-function selectTrack(index, autoplay = false) {
-    if (currentTrackIndex === index && isPlaying) {
+function selectTrack(index) {
+    if (currentTrackMatrix[currentTabId] === index && isPlaying) {
         togglePlayPause();
         return;
     }
 
-    currentTrackIndex = index;
-    const track = militaryTracks[index];
+    currentTrackMatrix[currentTabId] = index;
     
-    // Atualizar interface
-    updateTrackCards();
-    currentTrackName.textContent = track.name;
+    let track;
+
+    switch (currentTabId) {
+        case 0:
+            track = militaryTracks[index];
+            // Atualizar interface
+            updateCardsFromClass('.track-card');
+            currentTrackName.textContent = track.name;
+            break;
+        case 1:
+            track = militaryMusics[index];
+            // Atualizar interface
+            updateMusicCards(track);
+            currentTrackName.textContent = track.name;
+            break;
+    }
     
     // Carregar áudio
     audioPlayer.src = track.file;
     audioPlayer.load();
-    
+
     // Auto-play
     setTimeout(() => {
         playAudio();
     }, 100);
 }
 
-// Atualizar cards visuais
-function updateTrackCards() {
-    const cards = document.querySelectorAll('.track-card');
+// Atualizar cards visuais de qualquer aba
+function updateCardsFromClass(className){
+    const cards = document.querySelectorAll(className);
     cards.forEach((card, index) => {
-        card.classList.toggle('active', index === currentTrackIndex);
+        card.classList.toggle('active', index === currentTrackMatrix[currentTabId]);
     });
+}
+
+function updateMusicCards(track) {
+    updateCardsFromClass('.music-card');
+    
+    let selectedLyric = militaryLyrics[track.lyric_id]
+    if (selectedLyric == null){
+        selectedLyric = militaryLyrics[0]
+    }
+
+    lyricsCard.innerHTML = `
+        <h5>${track.name}</h5>
+        ${selectedLyric.innerHTML}
+    `;
 }
 
 // Controles de reprodução
 function togglePlayPause() {
-    if (currentTrackIndex === -1) {
+    if (currentTrackMatrix[currentTabId] === -1) {
         selectTrack(0);
         return;
     }
@@ -244,23 +475,24 @@ function stopAudio() {
 }
 
 function previousTrack() {
-    if (currentTrackIndex > 0) {
-        selectTrack(currentTrackIndex - 1);
+    if (currentTrackMatrix[currentTabId] > 0) {
+        selectTrack(currentTrackMatrix[currentTabId] - 1);
     } else {
-        selectTrack(militaryTracks.length - 1);
+        selectTrack(tabs[currentTabId].audiosLenght.length - 1);
     }
 }
 
 function nextTrack() {
-    if (currentTrackIndex < militaryTracks.length - 1) {
-        selectTrack(currentTrackIndex + 1);
+    
+    if (currentTrackMatrix[currentTabId] < tabs[currentTabId].audiosLenght - 1) {
+        selectTrack(currentTrackMatrix[currentTabId] + 1);
     } else {
         selectTrack(0);
     }
 }
 
 function restartTrack() {
-    selectTrack(currentTrackIndex)
+    selectTrack(currentTrackMatrix[currentTabId])
 }
 
 // Controle de volume
