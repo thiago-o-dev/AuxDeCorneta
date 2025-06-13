@@ -478,7 +478,7 @@ function previousTrack() {
     if (currentTrackMatrix[currentTabId] > 0) {
         selectTrack(currentTrackMatrix[currentTabId] - 1);
     } else {
-        selectTrack(tabs[currentTabId].audiosLenght.length - 1);
+        selectTrack(tabs[currentTabId].audiosLenght - 1);
     }
 }
 
