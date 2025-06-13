@@ -1,5 +1,5 @@
 body {
-    background: linear-gradient(135deg, #529e43 0%, #054403 100%);
+    background: linear-gradient(180deg, #529e43 0%, #054403 100%);
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
 }
@@ -136,6 +136,7 @@ body {
     border: 2px solid transparent;
     backdrop-filter: blur(5px);
     grid-area: music-lyrics-card;
+    min-width: 40rem;
 }
 
 .music-cards {
