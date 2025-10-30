@@ -520,12 +520,133 @@ function stopPlaylist() {
     // remove destaque
     document.querySelectorAll('.playlist-block').forEach(b => b.classList.remove('active'));
 }
+// Salvar playlist em formato JSON
+function savePlaylist() {
+    if (playlistTracks.length === 0) {
+        alert('Playlist vazia! Adicione itens antes de salvar.');
+        return;
+    }
+
+    const playlistJson = JSON.stringify(playlistTracks, null, 2);
+    
+    // Tentar copiar para área de transferência
+    navigator.clipboard.writeText(playlistJson).then(() => {
+        alert('✅ Playlist copiada para área de transferência!\n\nCole em um arquivo de texto para salvar.');
+    }).catch(err => {
+        // Fallback: mostrar em um prompt para copiar manualmente
+        const textarea = document.createElement('textarea');
+        textarea.value = playlistJson;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '0';
+        textarea.style.width = '1px';
+        textarea.style.height = '1px';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        
+        try {
+            document.execCommand('copy');
+            alert('✅ Playlist copiada para área de transferência!\n\nCole em um arquivo de texto para salvar.');
+        } catch (e) {
+            alert('❌ Não foi possível copiar automaticamente.\n\nAqui está sua playlist:\n\n' + playlistJson);
+        }
+        
+        document.body.removeChild(textarea);
+    });
+}
+
+// Importar playlist de formato JSON
+function importPlaylist() {
+    const jsonText = prompt('Cole aqui o texto JSON da playlist:\n\n(Ctrl+V para colar)', '');
+    
+    if (jsonText === null || jsonText.trim() === '') {
+        return; // Usuário cancelou ou não digitou nada
+    }
+
+    try {
+        const importedData = JSON.parse(jsonText);
+        
+        // Validar se é um array
+        if (!Array.isArray(importedData)) {
+            throw new Error('O formato deve ser um array JSON');
+        }
+
+        // Validar estrutura básica dos itens
+        for (let item of importedData) {
+            if (item.type === 'audio') {
+                if (!item.name || !item.file) {
+                    throw new Error('Itens de áudio devem ter "name" e "file"');
+                }
+            } else if (item.type === 'wait') {
+                if (typeof item.seconds !== 'number') {
+                    throw new Error('Itens de espera devem ter "seconds" como número');
+                }
+            } else {
+                throw new Error('Tipo de item desconhecido: ' + item.type);
+            }
+        }
+
+        // Confirmar substituição se já houver itens
+        if (playlistTracks.length > 0) {
+            const confirmar = confirm('A playlist atual será substituída. Deseja continuar?');
+            if (!confirmar) {
+                return;
+            }
+        }
+
+        // Importar
+        playlistTracks = importedData;
+        tabs[2].audiosLength = playlistTracks.length;
+        renderPlaylist();
+        //alert('✅ Playlist importada com sucesso!\n\n' + playlistTracks.length + ' itens carregados.');
+        
+    } catch (error) {
+        alert('❌ Erro ao importar playlist:\n\n' + error.message + '\n\nVerifique se o formato JSON está correto.');
+        console.error('Erro ao importar:', error);
+    }
+}
 
 function renderPlaylist() {
-    playlistGrid.innerHTML = ''; // limpa
+    const parentStyle = `
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    `
+    const baseStyle = `
+        display: flex;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        backdrop-filter: blur(5px);
+        align-items: center;
+        flex-direction: column;
+    `
+    const buttonstyles = `
+        ${baseStyle}
+        cursor: pointer;
+        background: linear-gradient(135deg, #529e43, #054403);
+        color: white;
+        border-color: #fff;
+    `
+    playlistGrid.innerHTML = `
+        <div id="playlistControls" class="playlist-controls" style="${parentStyle}">
+            <button id="savePlaylistBtn" class="btn" style="${buttonstyles}">Salvar Playlist em texto</button>
+            <button id="importPlaylistBtn" class="btn" style="${buttonstyles}">Importar texto Playlist</button>
+        </div>
+        <hr>`;
 
     if (playlistTracks.length === 0) {
-        playlistGrid.innerHTML = `<div class="empty-playlist">Playlist vazia — adicione toques, músicas ou um bloco de espera.</div>`;
+        playlistGrid.innerHTML += `
+        <div class="empty-playlist" style="${baseStyle}">Playlist vazia — adicione toques, músicas ou um bloco de espera.</div>`;
+        
+        // ✅ ADICIONAR OS LISTENERS AQUI TAMBÉM!
+        document.getElementById('savePlaylistBtn').addEventListener('click', savePlaylist);
+        document.getElementById('importPlaylistBtn').addEventListener('click', importPlaylist);
         return;
     }
 
@@ -539,7 +660,6 @@ function renderPlaylist() {
 
         let innerHtml = '';
         if (item.type === 'audio') {
-            //const iconHtml = item.icon ? `<i class="${item.icon} block-icon"></i>` : '';
             innerHtml = `
                 <div class="block-left">
                     <div class="block-meta">
@@ -615,16 +735,18 @@ function renderPlaylist() {
 
     list.addEventListener('drop', (ev) => {
         ev.preventDefault();
-        // recompute playlistTracks order a partir do DOM
         const nodes = Array.from(list.children);
         const newOrder = nodes.map(node => parseInt(node.dataset.index));
-        // newOrder é a ordem antiga dos índices; basta construir nova lista:
         const newList = newOrder.map(oldIdx => playlistTracks[oldIdx]);
         playlistTracks = newList;
-        renderPlaylist(); // re-render com índices corretos
+        renderPlaylist();
     });
 
     playlistGrid.appendChild(list);
+    
+    // ✅ ADICIONAR OS LISTENERS AQUI NO FINAL!
+    document.getElementById('savePlaylistBtn').addEventListener('click', savePlaylist);
+    document.getElementById('importPlaylistBtn').addEventListener('click', importPlaylist);
 }
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.playlist-block:not(.dragging)')];

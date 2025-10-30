@@ -145,7 +145,7 @@ body {
     gap: 1rem;
 }
 
-.track-card, .music-card, .tab-card {
+.track-card, .music-card, .tab-card, .savePlaylistBtn, .importPlaylistBtn {
     display: flex;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
@@ -160,7 +160,7 @@ body {
 }
 
 
-.track-card:hover, .tab-card:hover, .music-card:hover {
+.track-card:hover, .tab-card:hover, .music-card:hover, .savePlaylistBtn:hover, .importPlaylistBtn:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     border-color: #529e43;
