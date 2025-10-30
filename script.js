@@ -234,10 +234,19 @@ Lutaremos sem temor</p>
 ,
 ]
 
+var playlistTracks = []; // já existe (reuso)
+let playlistIndex = 0;
+let isPlaylistPlaying = false;
+let playlistWaitTimeout = null;
+let playlistWaitStart = null;
+let playlistWaitRemaining = null;
+
 const tabs = [
     { id: 0, htmlGridId: 'tracksGrid', name: "Toques de Corneta", audiosLength: militaryTracks.length, isActive: true},
     { id: 1, htmlGridId: 'musicsGrid', name: "Musicas Militares", audiosLength: militaryMusics.length, isActive: false},
+    { id: 2, htmlGridId: 'playlistGrid', name: "Montar Formatura", audiosLength: playlistTracks.length, isActive: false},
 ]
+
 // Elementos DOM
 const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
@@ -290,11 +299,18 @@ function createTabs() {
     tabs.forEach((tab, index) => {
         const btn = document.createElement('div');
         btn.className = 'tab-card' + (tab.isActive ? ' active' : '');
-
-        btn.innerHTML = `
-            <h5>${tab.name}</h5>
-            <small>Aba de Sons</small>
-        `;
+        
+        if (index == 2)
+            btn.innerHTML = `
+                <h5>${tab.name}</h5>
+                <small>Aba de Organização</small>
+            `;
+        else
+            btn.innerHTML = `
+                <h5>${tab.name}</h5>
+                <small>Aba de Sons</small>
+            `;
+        
 
         btn.addEventListener('click', () => selectTab(tab, tab.id));
         container.appendChild(btn);
@@ -311,6 +327,11 @@ function selectTab(tab, index) {
     tabs.forEach(t => {
         document.getElementById(t.htmlGridId).style.display = t.name === tab.name ? 'grid' : 'none';
     });
+
+    // SE for a aba Montar Formatura, renderizar playlist
+    if (tab.id === 2) {
+        renderPlaylist();
+    }
 }
 
 // Gerar cards das musicas
@@ -322,15 +343,22 @@ function generateMusicCards() {
     militaryMusics.forEach((track, index) => {
         const card = document.createElement('div');
         card.className = 'music-card';
-        // dps eu melhoro os icons
         card.innerHTML = `
-            <h5>${track.name}</h5>
-            <small>Música Militar</small>
+            <button class="add-to-playlist-btn" title="Adicionar à playlist">+</button>
+            <div class="music-card-main" data-index="${index}">
+                <h5>${track.name}</h5>
+                <small>Música Militar</small>
+            </div>
         `;
         card.addEventListener('click', () => selectTrack(index));
+        card.querySelector('.add-to-playlist-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            addToPlaylist({ type: 'audio', ...track });
+        });
         container.appendChild(card);
     });
 }
+
 
 // Gerar cards dos toques
 function generateTrackCards() {
@@ -338,14 +366,284 @@ function generateTrackCards() {
     militaryTracks.forEach((track, index) => {
         const card = document.createElement('div');
         card.className = 'track-card';
-        // dps eu melhoro os icons
         card.innerHTML = `
-            <h5>${track.name}</h5>
-            <small>Toque Militar</small>
+            <button class="add-to-playlist-btn" title="Adicionar à playlist">+</button>
+            <div class="track-card-main" data-index="${index}">
+                <h5>${track.name}</h5>
+                <small>Toque Militar</small>
+            </div>
         `;
         card.addEventListener('click', () => selectTrack(index));
+        card.querySelector('.add-to-playlist-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            addToPlaylist({ type: 'audio', ...track });
+        });
         tracksGrid.appendChild(card);
     });
+}
+
+// PLAYLIST
+function addToPlaylist(item) {
+    // item será um objeto {type:'audio', name, file, icon?, lyric_id?} ou {type:'wait', seconds}
+    playlistTracks.push(item);
+    renderPlaylist();
+    // ao adicionar, atualiza o contador/length do tab
+    tabs[2].audiosLength = playlistTracks.length;
+}
+function playPlaylist(startIndex = 0) {
+    if (playlistTracks.length === 0) {
+        alert('Playlist vazia. Adicione itens antes de reproduzir.');
+        return;
+    }
+    playlistIndex = Math.max(0, Math.min(startIndex, playlistTracks.length - 1));
+    isPlaylistPlaying = true;
+    isPlaying = true; // mantém compatibilidade com UI global
+    playPlaylistItem(playlistIndex);
+    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+}
+function playPlaylistItem(index) {
+    if (!playlistTracks[index]) {
+        stopPlaylist();
+        return;
+    }
+    const item = playlistTracks[index];
+
+    // destaque visual (simple)
+    const blocks = document.querySelectorAll('.playlist-block');
+    blocks.forEach(b => b.classList.toggle('active', parseInt(b.dataset.index) === index));
+
+    if (item.type === 'audio') {
+        // carregar no audioPlayer e tocar
+        audioPlayer.src = item.file;
+        audioPlayer.load();
+        audioPlayer.play().then(() => {
+            isPlaying = true;
+            isPlaylistPlaying = true;
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            currentTrackName.textContent = item.name;
+        }).catch((e) => {
+            console.error('Erro ao reproduzir item da playlist:', e);
+            nextPlaylistItem();
+        });
+    } else if (item.type === 'wait') {
+        // lógica de espera com possibilidade de pause/resume
+        playlistWaitRemaining = item.seconds * 1000;
+        startWaitCountdown();
+    }
+}
+
+function addWaitBlock(seconds = 5) {
+    playlistTracks.push({ type: 'wait', seconds: seconds });
+    renderPlaylist();
+    tabs[2].audiosLength = playlistTracks.length;
+}
+function startWaitCountdown() {
+    // inicia countdown com controle de pause/resume
+    playlistWaitStart = Date.now();
+    playlistWaitTimeout = setTimeout(() => {
+        playlistWaitTimeout = null;
+        playlistWaitStart = null;
+        playlistWaitRemaining = null;
+        // depois da espera, avança
+        nextPlaylistItem();
+    }, playlistWaitRemaining);
+    // mostrar timer no nome atual
+    currentTrackName.textContent = `Esperando ${Math.ceil(playlistWaitRemaining/1000)}s...`;
+}
+function pauseWaitCountdown() {
+    if (playlistWaitTimeout) {
+        clearTimeout(playlistWaitTimeout);
+        playlistWaitTimeout = null;
+        // calcula o restante
+        const elapsed = Date.now() - playlistWaitStart;
+        playlistWaitRemaining = Math.max(0, playlistWaitRemaining - elapsed);
+        playlistWaitStart = null;
+    }
+}
+function resumeWaitCountdown() {
+    if (playlistWaitRemaining != null && playlistWaitRemaining > 0) {
+        startWaitCountdown();
+    }
+}
+function resumeWaitCountdown() {
+    if (playlistWaitRemaining != null && playlistWaitRemaining > 0) {
+        startWaitCountdown();
+    }
+}
+
+function nextPlaylistItem() {
+    playlistIndex++;
+    if (playlistIndex >= playlistTracks.length) {
+        // fim da playlist — parar ou reiniciar? vamos parar por padrão
+        stopPlaylist();
+        return;
+    }
+    playPlaylistItem(playlistIndex);
+}
+
+function previousPlaylistItem() {
+    if (playlistIndex > 0) {
+        playlistIndex--;
+        playPlaylistItem(playlistIndex);
+    } else {
+        // voltar ao início do primeiro item
+        playPlaylistItem(0);
+    }
+}
+
+function pausePlaylist() {
+    // pausa audio ou timeout
+    if (playlistWaitTimeout) {
+        pauseWaitCountdown();
+    }
+    if (!audioPlayer.paused) {
+        audioPlayer.pause();
+    }
+    isPlaylistPlaying = false;
+    isPlaying = false;
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+}
+
+function stopPlaylist() {
+    // limpa tudo
+    if (playlistWaitTimeout) {
+        clearTimeout(playlistWaitTimeout);
+        playlistWaitTimeout = null;
+    }
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+    isPlaylistPlaying = false;
+    isPlaying = false;
+    playlistIndex = 0;
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    currentTrackName.textContent = '';
+    // remove destaque
+    document.querySelectorAll('.playlist-block').forEach(b => b.classList.remove('active'));
+}
+
+function renderPlaylist() {
+    playlistGrid.innerHTML = ''; // limpa
+
+    if (playlistTracks.length === 0) {
+        playlistGrid.innerHTML = `<div class="empty-playlist">Playlist vazia — adicione toques, músicas ou um bloco de espera.</div>`;
+        return;
+    }
+
+    const list = document.createElement('div');
+    list.className = 'playlist-list';
+    playlistTracks.forEach((item, idx) => {
+        const block = document.createElement('div');
+        block.className = 'playlist-block';
+        block.draggable = true;
+        block.dataset.index = idx;
+
+        let innerHtml = '';
+        if (item.type === 'audio') {
+            //const iconHtml = item.icon ? `<i class="${item.icon} block-icon"></i>` : '';
+            innerHtml = `
+                <div class="block-left">
+                    <div class="block-meta">
+                        <strong>${item.name}</strong>
+                        <small>${item.lyric_id ? 'Música' : 'Toque'}</small>
+                    </div>
+                </div>
+                <div class="block-right">
+                    <button class="move-up" title="Mover para cima">↑</button>
+                    <button class="move-down" title="Mover para baixo">↓</button>
+                    <button class="remove-block" title="Remover">✕</button>
+                </div>
+            `;
+        } else if (item.type === 'wait') {
+            innerHtml = `
+                <div class="block-left">
+                    <i class="fas fa-clock block-icon"></i>
+                    <div class="block-meta">
+                        <strong>Esperar</strong>
+                        <small><input class="wait-seconds" type="number" min="0" value="${item.seconds}" style="width:60px;"> segundos</small>
+                    </div>
+                </div>
+                <div class="block-right">
+                    <button class="move-up" title="Mover para cima">↑</button>
+                    <button class="move-down" title="Mover para baixo">↓</button>
+                    <button class="remove-block" title="Remover">✕</button>
+                </div>
+            `;
+        }
+
+        block.innerHTML = innerHtml;
+        list.appendChild(block);
+
+        // eventos dos botões internos
+        block.querySelectorAll('.move-up')[0].addEventListener('click', () => reorderPlaylist(idx, idx - 1));
+        block.querySelectorAll('.move-down')[0].addEventListener('click', () => reorderPlaylist(idx, idx + 1));
+        block.querySelectorAll('.remove-block')[0].addEventListener('click', () => {
+            playlistTracks.splice(idx, 1);
+            renderPlaylist();
+            tabs[2].audiosLength = playlistTracks.length;
+        });
+
+        if (item.type === 'wait') {
+            const input = block.querySelector('.wait-seconds');
+            input.addEventListener('change', (e) => {
+                const v = parseFloat(e.target.value) || 0;
+                playlistTracks[idx].seconds = v;
+            });
+        }
+
+        // Drag events
+        block.addEventListener('dragstart', (ev) => {
+            ev.dataTransfer.setData('text/plain', idx);
+            block.classList.add('dragging');
+        });
+        block.addEventListener('dragend', (ev) => {
+            block.classList.remove('dragging');
+        });
+    });
+
+    // container drop events
+    list.addEventListener('dragover', (ev) => {
+        ev.preventDefault();
+        const afterElem = getDragAfterElement(list, ev.clientY);
+        const dragging = document.querySelector('.dragging');
+        if (!dragging) return;
+        if (afterElem == null) {
+            list.appendChild(dragging);
+        } else {
+            list.insertBefore(dragging, afterElem);
+        }
+    });
+
+    list.addEventListener('drop', (ev) => {
+        ev.preventDefault();
+        // recompute playlistTracks order a partir do DOM
+        const nodes = Array.from(list.children);
+        const newOrder = nodes.map(node => parseInt(node.dataset.index));
+        // newOrder é a ordem antiga dos índices; basta construir nova lista:
+        const newList = newOrder.map(oldIdx => playlistTracks[oldIdx]);
+        playlistTracks = newList;
+        renderPlaylist(); // re-render com índices corretos
+    });
+
+    playlistGrid.appendChild(list);
+}
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.playlist-block:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+function reorderPlaylist(fromIndex, toIndex) {
+    if (toIndex < 0 || toIndex >= playlistTracks.length) return;
+    const item = playlistTracks.splice(fromIndex, 1)[0];
+    playlistTracks.splice(toIndex, 0, item);
+    renderPlaylist();
 }
 
 // Configurar event listeners
@@ -360,24 +658,27 @@ function setupEventListeners() {
 
 // Configurar eventos do áudio
 function setupAudioEvents() {
-    audioPlayer.addEventListener('loadstart', () => {
-        loading.style.display = 'block';
-    });
-
-    audioPlayer.addEventListener('canplay', () => {
-        loading.style.display = 'none';
-    });
-
+    audioPlayer.addEventListener('loadstart', () => { loading.style.display = 'block'; });
+    audioPlayer.addEventListener('canplay', () => { loading.style.display = 'none'; });
     audioPlayer.addEventListener('timeupdate', updateProgress);
     audioPlayer.addEventListener('loadedmetadata', updateDuration);
-    audioPlayer.addEventListener('ended', togglePlayPause);
-    
+
+    audioPlayer.addEventListener('ended', () => {
+        // se estivermos na aba playlist E tocando playlist -> ir para próximo item
+        if (currentTabId === 2 && isPlaylistPlaying) {
+            nextPlaylistItem();
+        } else {
+            togglePlayPause();
+        }
+    });
+
     audioPlayer.addEventListener('error', (e) => {
         console.error('Erro ao carregar áudio:', e);
         alert('Erro ao carregar o arquivo de áudio. Verifique se o arquivo existe.');
         loading.style.display = 'none';
     });
 }
+
 
 // Selecionar toque
 function selectTrack(index) {
@@ -439,6 +740,18 @@ function updateMusicCards(track) {
 
 // Controles de reprodução
 function togglePlayPause() {
+    // se estamos na aba playlist, controlar modo playlist
+    if (currentTabId === 2) {
+        if (!isPlaylistPlaying) {
+            // começar do playlistIndex atual (se a playlist estiver vazia, avisar)
+            playPlaylist(playlistIndex);
+        } else {
+            pausePlaylist();
+        }
+        return;
+    }
+
+    // comportamento normal (fora da aba playlist)
     if (currentTrackMatrix[currentTabId] === -1) {
         selectTrack(0);
         return;
@@ -467,6 +780,12 @@ function pauseAudio() {
 }
 
 function stopAudio() {
+    // se estiver na aba playlist, para playlist
+    if (currentTabId === 2 && (isPlaylistPlaying || playlistWaitTimeout)) {
+        stopPlaylist();
+        return;
+    }
+
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
     isPlaying = false;
@@ -475,6 +794,17 @@ function stopAudio() {
 }
 
 function previousTrack() {
+    if (currentTabId === 2) {
+        if (isPlaylistPlaying) {
+            previousPlaylistItem();
+        } else {
+            playlistIndex = Math.max(0, playlistIndex - 1);
+            renderPlaylist();
+        }
+        return;
+    }
+
+    // comportamento original do player
     if (currentTrackMatrix[currentTabId] > 0) {
         selectTrack(currentTrackMatrix[currentTabId] - 1);
     } else {
@@ -482,8 +812,22 @@ function previousTrack() {
     }
 }
 
+
 function nextTrack() {
-    
+    if (currentTabId === 2) {
+        // controla a playlist
+        if (isPlaylistPlaying) {
+            nextPlaylistItem();
+        } else {
+            // se não tocando, avança índice para quando iniciar
+            playlistIndex = Math.min(playlistIndex + 1, playlistTracks.length - 1);
+            // destacar visual
+            renderPlaylist();
+        }
+        return;
+    }
+
+    // Comportamento original
     if (currentTrackMatrix[currentTabId] < tabs[currentTabId].audiosLength - 1) {
         selectTrack(currentTrackMatrix[currentTabId] + 1);
     } else {
