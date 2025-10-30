@@ -313,6 +313,11 @@ body {
 .block-icon {
     margin-right: 8px;
 }
+.block-meta {
+    display: flex;
+    width: 200px;
+    justify-content: space-between;
+}
 
 .wait-seconds {
     padding: 3px;
