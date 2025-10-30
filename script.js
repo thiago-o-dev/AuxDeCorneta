@@ -406,6 +406,7 @@ function playPlaylistItem(index) {
         stopPlaylist();
         return;
     }
+    playlistIndex = index
     const item = playlistTracks[index];
 
     // destaque visual (simple)
@@ -608,6 +609,8 @@ function importPlaylist() {
 }
 
 function renderPlaylist() {
+    if (currentTabId != 2)
+        return
     const parentStyle = `
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -694,6 +697,7 @@ function renderPlaylist() {
         list.appendChild(block);
 
         // eventos dos botões internos
+        block.classList.toggle('active', playlistIndex === idx)
         block.querySelectorAll('.move-up')[0].addEventListener('click', () => reorderPlaylist(idx, idx - 1));
         block.querySelectorAll('.move-down')[0].addEventListener('click', () => reorderPlaylist(idx, idx + 1));
         block.querySelectorAll('.remove-block')[0].addEventListener('click', () => {
@@ -701,7 +705,7 @@ function renderPlaylist() {
             renderPlaylist();
             tabs[2].audiosLength = playlistTracks.length;
         });
-
+        
         if (item.type === 'wait') {
             const input = block.querySelector('.wait-seconds');
             input.addEventListener('change', (e) => {
@@ -709,7 +713,8 @@ function renderPlaylist() {
                 playlistTracks[idx].seconds = v;
             });
         }
-
+        
+        block.addEventListener('click', () => playPlaylistItem(idx));
         // Drag events
         block.addEventListener('dragstart', (ev) => {
             ev.dataTransfer.setData('text/plain', idx);
